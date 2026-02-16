@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo Systems - Warehouse, Logística y Distribución en Laredo, Texas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Barlow:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Barlow', 'system-ui', 'sans-serif'],
+                        'display': ['Rajdhani', 'sans-serif'],
+                    },
+                    colors: {
+                        'algo': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0369a1',
+                            600: '#075985',
+                            700: '#0c4a6e',
+                            800: '#1e3a8a',
+                            900: '#1e40af',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Barlow', system-ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0369a1 0%, #1e3a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, rgba(3, 105, 161, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(3, 105, 161, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        
+        .bg-diagonal-lines {
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(3, 105, 161, 0.03) 10px,
+                rgba(3, 105, 161, 0.03) 20px
+            );
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .card-3d:hover {
+            transform: translateY(-12px) rotateX(2deg);
+            box-shadow: 0 30px 60px -12px rgba(3, 105, 161, 0.25);
+        }
+        
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes slide-in-left {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slide-in-right {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-slide-in-left {
+            animation: slide-in-left 0.8s ease-out forwards;
+        }
+        
+        .animate-slide-in-right {
+            animation: slide-in-right 0.8s ease-out forwards;
+        }
+        
+        .animate-slide-up {
+            animation: slide-up 0.8s ease-out forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; opacity: 0; }
+        .delay-200 { animation-delay: 0.2s; opacity: 0; }
+        .delay-300 { animation-delay: 0.3s; opacity: 0; }
+        .delay-400 { animation-delay: 0.4s; opacity: 0; }
+        .delay-500 { animation-delay: 0.5s; opacity: 0; }
+        
+        .number-counter {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .tech-border {
+            position: relative;
+        }
+        
+        .tech-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0369a1, #1e3a8a);
+        }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="40" height="40" rx="8" fill="url(#logo-gradient)" stroke="#0369a1" stroke-width="2"/>
+                        <path d="M15 20 L25 15 L35 20 M15 20 L15 30 M35 20 L35 30 M15 30 L25 35 L35 30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="25" cy="25" r="2" fill="white"/>
+                        <defs>
+                            <linearGradient id="logo-gradient" x1="5" y1="5" x2="45" y2="45">
+                                <stop offset="0%" stop-color="#0369a1"/>
+                                <stop offset="100%" stop-color="#1e3a8a"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div>
+                        <div class="text-2xl font-display font-bold text-gray-900">ALGO SYSTEMS</div>
+                        <div class="text-xs text-blue-700 font-display tracking-wider">LOGISTICS & WAREHOUSE</div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#servicios" class="text-gray-600 hover:text-blue-700 transition font-medium">Servicios</a>
+                    <a href="#tecnologia" class="text-gray-600 hover:text-blue-700 transition font-medium">Tecnología</a>
+                    <a href="#industrias" class="text-gray-600 hover:text-blue-700 transition font-medium">Industrias</a>
+                    <a href="#cobertura" class="text-gray-600 hover:text-blue-700 transition font-medium">Cobertura</a>
+                    <a href="#contacto" class="bg-gradient-to-r from-blue-700 to-blue-900 text-white px-6 py-2.5 rounded-lg hover:shadow-lg hover:shadow-blue-700/30 transition font-semibold">
+                        Cotizar Ahora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6 bg-gradient-to-br from-blue-50 via-white to-gray-50 bg-grid-pattern relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute top-20 right-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-20 left-20 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1.5s;"></div>
+        
+        <div class="max-w-7xl mx-auto relative">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="animate-slide-in-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 border border-blue-200 rounded-full mb-6">
+                            <div class="w-2 h-2 bg-blue-700 rounded-full animate-pulse"></div>
+                            <span class="text-blue-900 font-display font-semibold text-sm tracking-wider">OPERACIONES 24/7/365</span>
+                        </div>
+                        <h1 class="text-6xl md:text-7xl font-display font-black leading-none mb-6">
+                            <span class="text-gray-900">WAREHOUSE</span>
+                            <span class="gradient-text block">INTELIGENTE</span>
+                        </h1>
+                        <p class="text-xl text-gray-600 leading-relaxed mb-8">
+                            Sistema completo de almacenamiento, distribución y logística cross-border.
+                            <span class="text-blue-700 font-bold">Tecnología de clase mundial</span> en el corazón de Texas.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 animate-slide-in-left delay-200">
+                        <a href="#contacto" class="group bg-gradient-to-r from-blue-700 to-blue-900 text-white px-8 py-4 rounded-xl hover:shadow-2xl hover:shadow-blue-700/30 transition font-bold text-lg text-center relative overflow-hidden">
+                            <span class="relative z-10">Solicitar Cotización</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition"></div>
+                        </a>
+                        <a href="#servicios" class="bg-white border-2 border-gray-300 text-gray-900 px-8 py-4 rounded-xl hover:border-blue-700 hover:shadow-lg transition font-bold text-lg text-center">
+                            Ver Servicios
+                        </a>
+                    </div>
+                    
+                    <!-- Live Stats -->
+                    <div class="grid grid-cols-3 gap-6 pt-8 animate-slide-in-left delay-300">
+                        <div class="tech-border bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                            <div class="text-3xl font-display font-bold text-blue-700 number-counter">250K+</div>
+                            <div class="text-xs text-gray-600 uppercase tracking-wide">SQ FT Warehouse</div>
+                        </div>
+                        <div class="tech-border bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                            <div class="text-3xl font-display font-bold text-blue-700 number-counter">99.8%</div>
+                            <div class="text-xs text-gray-600 uppercase tracking-wide">Precisión</div>
+                        </div>
+                        <div class="tech-border bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                            <div class="text-3xl font-display font-bold text-blue-700 number-counter">24/7</div>
+                            <div class="text-xs text-gray-600 uppercase tracking-wide">Operaciones</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Preview -->
+                <div class="relative animate-slide-in-right delay-400">
+                    <div class="bg-white rounded-2xl p-6 border-2 border-gray-200 shadow-2xl">
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                <span class="font-display font-bold text-lg text-gray-900">SISTEMA EN VIVO</span>
+                            </div>
+                            <span class="font-mono text-sm text-gray-500">REAL-TIME</span>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- Shipment Status -->
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-700">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-gray-900">Envío #LRD-2045</span>
+                                    <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">EN TRÁNSITO</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-600">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path><path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"></path></svg>
+                                    Laredo → San Antonio
+                                </div>
+                                <div class="mt-2 w-full bg-gray-200 rounded-full h-1">
+                                    <div class="bg-blue-700 h-1 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Inventory Alert -->
+                            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-600">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-gray-900">Inventario SKU-8421</span>
+                                    <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold">BAJO STOCK</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-600">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"></path></svg>
+                                    45 unidades restantes
+                                </div>
+                            </div>
+                            
+                            <!-- Cross-border Clearance -->
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-900">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-gray-900">Aduana #MX-3392</span>
+                                    <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold">DESPACHADO</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-600">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                    Documentación completa
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
+                            <span>Última actualización: hace 2 min</span>
+                            <a href="#tecnologia" class="text-blue-700 hover:text-blue-900 font-semibold">Ver Dashboard →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="py-20 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-display font-black mb-4">
+                    <span class="text-gray-900">SERVICIOS</span>
+                    <span class="gradient-text block">INTEGRALES</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Soluciones completas de logística, almacenamiento y distribución
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Warehouse Management -->
+                <div class="card-3d bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-blue-700 transition">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold mb-3 text-gray-900">Warehouse Management</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Sistema completo de gestión de almacén con tecnología WMS</p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Almacenamiento seguro y climatizado</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Gestión de inventario en tiempo real</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Cross-docking y transloading</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Picking & packing profesional</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Fulfillment para e-commerce</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Distribution & Transport -->
+                <div class="card-3d bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-blue-700 transition">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                            <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold mb-3 text-gray-900">Distribución & Transporte</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Flota propia y rutas optimizadas por todo Texas</p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Transporte local y regional</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Last mile delivery</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Rutas optimizadas con IA</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Tracking GPS en tiempo real</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Entregas programadas y express</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cross-Border Logistics -->
+                <div class="card-3d bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-blue-700 transition">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold mb-3 text-gray-900">Logística Cross-Border</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Expertos en operaciones USA-México</p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Despacho aduanal completo</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Brokerage certificado</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Documentación import/export</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Cumplimiento normativo</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Certificaciones C-TPAT</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Technology Integration -->
+                <div class="card-3d bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-blue-700 transition">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold mb-3 text-gray-900">Tecnología & Software</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Plataforma propia de gestión logística</p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>WMS propietario de última generación</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Portal web para clientes 24/7</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Integraciones API con ERP/e-commerce</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Reporting y analytics avanzado</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Automatización con IA</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Value Added Services -->
+                <div class="card-3d bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-blue-700 transition">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold mb-3 text-gray-900">Servicios de Valor Agregado</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Operaciones especializadas personalizadas</p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Kitting y assembly</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Etiquetado y repackaging</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Control de calidad</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Devoluciones y reverse logistics</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Inventario consignado</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Specialized Transport -->
+                <div class="card-3d bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-blue-700 transition">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-display font-bold mb-3 text-gray-900">Transporte Especializado</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Soluciones para cargas especiales</p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Temperatura controlada (refrigerado)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Carga oversized y heavy haul</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Materiales peligrosos (HAZMAT)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>High-value cargo seguro</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-700 mt-1 font-bold">▸</span>
+                            <span>Flatbed y dry van</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="tecnologia" class="py-20 px-6 bg-gray-50 bg-diagonal-lines">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-display font-black mb-4">
+                    <span class="gradient-text">TECNOLOGÍA</span>
+                    <span class="text-gray-900 block">DE VANGUARDIA</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Plataforma tecnológica que optimiza cada aspecto de tu cadena logística
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-display font-bold mb-2 text-gray-900">Visibilidad Total en Tiempo Real</h3>
+                            <p class="text-gray-600">Monitorea tu inventario y envíos desde cualquier dispositivo, 24/7. Dashboard intuitivo con métricas clave.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-display font-bold mb-2 text-gray-900">Analytics Predictivo con IA</h3>
+                            <p class="text-gray-600">Predicción de demanda, optimización de rutas y alertas automáticas basadas en machine learning.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-display font-bold mb-2 text-gray-900">Integraciones Seamless</h3>
+                            <p class="text-gray-600">APIs robustas para conectar con SAP, Oracle, Shopify, Amazon, WooCommerce y más de 100 plataformas.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-display font-bold mb-2 text-gray-900">Seguridad Enterprise</h3>
+                            <p class="text-gray-600">Encriptación de datos, backups automáticos y cumplimiento con normativas internacionales.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 border-2 border-gray-200 shadow-xl">
+                    <h3 class="text-2xl font-display font-bold mb-6 flex items-center gap-3 text-gray-900">
+                        <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                        Portal del Cliente
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="font-semibold text-gray-900">Inventario Actual</span>
+                                <span class="text-blue-700 font-mono font-bold">24,582 unidades</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 text-sm">
+                                <div class="bg-white p-3 rounded border border-gray-200">
+                                    <div class="text-gray-500 text-xs">En Stock</div>
+                                    <div class="font-bold text-green-600">22,145</div>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-gray-200">
+                                    <div class="text-gray-500 text-xs">En Tránsito</div>
+                                    <div class="font-bold text-yellow-600">2,437</div>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-gray-200">
+                                    <div class="text-gray-500 text-xs">Reservado</div>
+                                    <div class="font-bold text-blue-600">892</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="font-semibold text-gray-900">Órdenes Esta Semana</span>
+                                <span class="text-blue-700 font-mono font-bold">147 órdenes</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Completadas</span>
+                                    <span class="text-green-600 font-semibold">134</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">En Proceso</span>
+                                    <span class="text-yellow-600 font-semibold">13</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-gray-900">Reportes Disponibles</span>
+                                <button class="text-blue-700 text-sm font-semibold hover:text-blue-900">Descargar →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Industries Section -->
+    <section id="industrias" class="py-20 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-display font-black mb-4">
+                    <span class="text-gray-900">INDUSTRIAS</span>
+                    <span class="gradient-text block">QUE SERVIMOS</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Experiencia especializada en los sectores clave de Laredo y Texas
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">🏭</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Manufactura & Maquiladoras</h3>
+                    <p class="text-sm text-gray-600">Cross-docking, just-in-time delivery y gestión de componentes</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">🛒</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Retail & E-commerce</h3>
+                    <p class="text-sm text-gray-600">Fulfillment, last mile, integraciones con plataformas online</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">📦</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Distribución Mayorista</h3>
+                    <p class="text-sm text-gray-600">Almacenamiento bulk, cross-border, gestión de SKUs masivos</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">🍔</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Food & Beverage</h3>
+                    <p class="text-sm text-gray-600">Almacenes refrigerados, cumplimiento FDA, trazabilidad completa</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">⚙️</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Automotriz & Partes</h3>
+                    <p class="text-sm text-gray-600">Gestión de partes, entregas just-in-sequence, supply chain crítico</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">💊</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Farmacéutico & Healthcare</h3>
+                    <p class="text-sm text-gray-600">Temperatura controlada, certificaciones, cadena de custodia</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">👕</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Textil & Apparel</h3>
+                    <p class="text-sm text-gray-600">Kitting, etiquetado, compliance de importación, fast fashion</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-700 hover-lift shadow-sm hover:shadow-lg transition">
+                    <div class="text-4xl mb-3">🔌</div>
+                    <h3 class="font-display font-bold text-lg mb-2 text-gray-900">Electrónica & Tech</h3>
+                    <p class="text-sm text-gray-600">Almacenamiento seguro, control de calidad, fulfillment B2B/B2C</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coverage Section -->
+    <section id="cobertura" class="py-20 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-display font-black mb-4">
+                    <span class="gradient-text">COBERTURA</span>
+                    <span class="text-gray-900 block">ESTRATÉGICA</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Ubicados en el corazón del comercio USA-México
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="bg-white p-8 rounded-2xl border-2 border-gray-200 shadow-lg">
+                        <h3 class="text-2xl font-display font-bold mb-6 text-gray-900">Ciudades que Servimos</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">Laredo, TX</div>
+                                    <div class="text-xs text-gray-600">HQ Principal</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">McAllen, TX</div>
+                                    <div class="text-xs text-gray-600">Hub Regional</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">San Antonio, TX</div>
+                                    <div class="text-xs text-gray-600">Distribución</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">El Paso, TX</div>
+                                    <div class="text-xs text-gray-600">Cross-Border</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">Austin, TX</div>
+                                    <div class="text-xs text-gray-600">Tech Hub</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-900">Houston, TX</div>
+                                    <div class="text-xs text-gray-600">Puerto</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <h4 class="font-bold mb-4 text-gray-900">Ventajas de Ubicación</h4>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-700 mt-1 font-bold">✓</span>
+                                    <span>A 2 minutos del World Trade Bridge</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-700 mt-1 font-bold">✓</span>
+                                    <span>Acceso directo a I-35 corridor</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-700 mt-1 font-bold">✓</span>
+                                    <span>Foreign Trade Zone (FTZ) certificada</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-700 mt-1 font-bold">✓</span>
+                                    <span>24/7 operaciones aduanales</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="bg-white p-8 rounded-2xl border-2 border-gray-200 shadow-lg">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-6 flex items-center justify-center border border-gray-200">
+                            <div class="text-center">
+                                <svg class="w-20 h-20 text-blue-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                </svg>
+                                <p class="text-gray-700 font-semibold">Mapa Interactivo de Rutas</p>
+                                <p class="text-sm text-gray-500 mt-2">Visualización de red logística</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
+                                <div class="text-3xl font-display font-bold text-blue-700">250K+</div>
+                                <div class="text-xs text-gray-600 uppercase">Sq Ft Warehouse</div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
+                                <div class="text-3xl font-display font-bold text-blue-700">50+</div>
+                                <div class="text-xs text-gray-600 uppercase">Unidades de Flota</div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
+                                <div class="text-3xl font-display font-bold text-blue-700">500+</div>
+                                <div class="text-xs text-gray-600 uppercase">Clientes Activos</div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-200">
+                                <div class="text-3xl font-display font-bold text-blue-700">15+</div>
+                                <div class="text-xs text-gray-600 uppercase">Años Experiencia</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Calculator Section -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-display font-black mb-4">
+                    <span class="gradient-text">CALCULADORA</span>
+                    <span class="text-gray-900">DE COTIZACIÓN</span>
+                </h2>
+                <p class="text-gray-600">Obtén un estimado instantáneo para tus necesidades logísticas</p>
+            </div>
+
+            <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg">
+                <form id="quoteCalculator" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Servicio Requerido</label>
+                            <select class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 focus:border-blue-700 focus:outline-none">
+                                <option>Almacenamiento</option>
+                                <option>Distribución</option>
+                                <option>Cross-Border</option>
+                                <option>Fulfillment</option>
+                                <option>Transporte</option>
+                                <option>Solución Integral</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Volumen Mensual</label>
+                            <select class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 focus:border-blue-700 focus:outline-none">
+                                <option>Menos de 5 pallets</option>
+                                <option>5-20 pallets</option>
+                                <option>20-50 pallets</option>
+                                <option>50-100 pallets</option>
+                                <option>100+ pallets</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Industria</label>
+                        <select class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 focus:border-blue-700 focus:outline-none">
+                            <option>Manufactura/Maquiladora</option>
+                            <option>Retail/E-commerce</option>
+                            <option>Distribución Mayorista</option>
+                            <option>Food & Beverage</option>
+                            <option>Automotriz</option>
+                            <option>Farmacéutico</option>
+                            <option>Textil</option>
+                            <option>Electrónica</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Origen</label>
+                            <input type="text" placeholder="Ciudad, Estado" class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Destino</label>
+                            <input type="text" placeholder="Ciudad, Estado" class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="showEstimate()" class="w-full bg-gradient-to-r from-blue-700 to-blue-900 text-white py-4 rounded-xl hover:shadow-2xl hover:shadow-blue-700/30 transition font-bold text-lg">
+                        Calcular Estimado
+                    </button>
+
+                    <div id="estimateResult" class="hidden mt-6 p-6 bg-blue-50 border-2 border-blue-700 rounded-xl">
+                        <div class="text-center">
+                            <div class="text-sm text-gray-600 mb-2">Estimado Mensual</div>
+                            <div class="text-4xl font-display font-bold text-blue-700 mb-4">$2,500 - $4,200</div>
+                            <p class="text-sm text-gray-600 mb-4">*Precio estimado. Cotización final después de evaluación detallada.</p>
+                            <a href="#contacto" class="inline-block bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition font-semibold">
+                                Solicitar Cotización Formal
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="py-20 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-display font-black mb-6">
+                        <span class="text-gray-900">COMIENZA</span>
+                        <span class="gradient-text block">HOY MISMO</span>
+                    </h2>
+                    <p class="text-xl text-gray-600 mb-8">
+                        Contacta a nuestro equipo de expertos y descubre cómo podemos optimizar tu cadena logística
+                    </p>
+
+                    <div class="space-y-6 mb-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Teléfono</div>
+                                <div class="text-xl font-bold text-gray-900">(956) 555-ALGO</div>
+                                <div class="text-sm text-blue-700">Disponible 24/7</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Email</div>
+                                <div class="text-xl font-bold text-gray-900">info@algosystems.com</div>
+                                <div class="text-sm text-blue-700">Respuesta en 24 hrs</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Oficinas Principales</div>
+                                <div class="text-xl font-bold text-gray-900">Laredo, Texas 78045</div>
+                                <div class="text-sm text-blue-700">World Trade Bridge Area</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="font-display font-bold mb-4 text-gray-900">Horario de Atención</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Lunes - Viernes</span>
+                                <span class="font-semibold text-gray-900">24/7</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Sábado - Domingo</span>
+                                <span class="font-semibold text-gray-900">24/7</span>
+                            </div>
+                            <div class="pt-2 border-t border-gray-200 text-blue-700 font-semibold">
+                                Operaciones continuas sin interrupción
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg">
+                    <h3 class="text-2xl font-display font-bold mb-6 text-gray-900">Solicitar Información</h3>
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo *</label>
+                                <input type="text" required class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none" placeholder="Juan Pérez">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                                <input type="email" required class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none" placeholder="juan@empresa.com">
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Teléfono *</label>
+                                <input type="tel" required class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none" placeholder="(956) 123-4567">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Empresa</label>
+                                <input type="text" class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none" placeholder="Mi Empresa S.A.">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Servicio de Interés</label>
+                            <select class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 focus:border-blue-700 focus:outline-none">
+                                <option>Selecciona un servicio</option>
+                                <option>Warehouse Management</option>
+                                <option>Distribución & Transporte</option>
+                                <option>Logística Cross-Border</option>
+                                <option>Tecnología & Software</option>
+                                <option>Servicios de Valor Agregado</option>
+                                <option>Transporte Especializado</option>
+                                <option>Solución Integral</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Mensaje *</label>
+                            <textarea required rows="5" class="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:border-blue-700 focus:outline-none resize-none" placeholder="Cuéntanos sobre tus necesidades logísticas..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-700 to-blue-900 text-white py-4 rounded-xl hover:shadow-2xl hover:shadow-blue-700/30 transition font-bold text-lg">
+                            Enviar Solicitud
+                        </button>
+
+                        <div id="contactFormMessage" class="hidden p-4 rounded-lg text-center font-medium"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg width="40" height="40" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="5" width="40" height="40" rx="8" fill="url(#footer-logo-gradient)" stroke="#0369a1" stroke-width="2"/>
+                            <path d="M15 20 L25 15 L35 20 M15 20 L15 30 M35 20 L35 30 M15 30 L25 35 L35 30" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="25" cy="25" r="2" fill="white"/>
+                            <defs>
+                                <linearGradient id="footer-logo-gradient" x1="5" y1="5" x2="45" y2="45">
+                                    <stop offset="0%" stop-color="#0369a1"/>
+                                    <stop offset="100%" stop-color="#1e3a8a"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div>
+                            <div class="text-xl font-display font-bold text-white">ALGO SYSTEMS</div>
+                            <div class="text-xs text-blue-400 font-display">LOGISTICS & WAREHOUSE</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm">Soluciones integrales de warehouse, distribución y logística cross-border</p>
+                </div>
+
+                <div>
+                    <h3 class="font-display font-bold mb-4 text-white">Servicios</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#servicios" class="hover:text-blue-400 transition">Warehouse Management</a></li>
+                        <li><a href="#servicios" class="hover:text-blue-400 transition">Distribución</a></li>
+                        <li><a href="#servicios" class="hover:text-blue-400 transition">Cross-Border</a></li>
+                        <li><a href="#servicios" class="hover:text-blue-400 transition">Tecnología</a></li>
+                        <li><a href="#servicios" class="hover:text-blue-400 transition">Transporte</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-display font-bold mb-4 text-white">Industrias</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#industrias" class="hover:text-blue-400 transition">Manufactura</a></li>
+                        <li><a href="#industrias" class="hover:text-blue-400 transition">Retail & E-commerce</a></li>
+                        <li><a href="#industrias" class="hover:text-blue-400 transition">Food & Beverage</a></li>
+                        <li><a href="#industrias" class="hover:text-blue-400 transition">Automotriz</a></li>
+                        <li><a href="#industrias" class="hover:text-blue-400 transition">Healthcare</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-display font-bold mb-4 text-white">Contacto</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>📍 Laredo, Texas 78045</li>
+                        <li>📧 info@algosystems.com</li>
+                        <li>📱 (956) 555-ALGO</li>
+                        <li class="text-blue-400 font-semibold">Operaciones 24/7/365</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                <p>&copy; 2026 Algo Systems. Todos los derechos reservados.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-blue-400 transition">Privacidad</a>
+                    <a href="#" class="hover:text-blue-400 transition">Términos</a>
+                    <a href="#" class="hover:text-blue-400 transition">Portal Clientes</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Contact Form
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const messageDiv = document.getElementById('contactFormMessage');
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            
+            submitButton.textContent = 'Enviando...';
+            submitButton.disabled = true;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                messageDiv.classList.add('bg-green-100', 'text-green-700', 'border', 'border-green-300');
+                messageDiv.textContent = '✅ ¡Solicitud enviada! Nos contactaremos contigo en las próximas 24 horas.';
+                
+                submitButton.textContent = 'Enviar Solicitud';
+                submitButton.disabled = false;
+                
+                e.target.reset();
+                
+                setTimeout(() => {
+                    messageDiv.classList.add('hidden');
+                }, 5000);
+            }, 1500);
+        });
+
+        // Quote Calculator
+        function showEstimate() {
+            const resultDiv = document.getElementById('estimateResult');
+            resultDiv.classList.remove('hidden');
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
